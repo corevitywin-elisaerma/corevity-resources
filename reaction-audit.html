@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Reaction Audit | Corevity</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink:    #fbcfe8;
+    --pink-d:  #f9a8d4;
+    --slate:   #495057;
+    --slate-d: #2d3035;
+    --gold:    #FFC107;
+    --gold-d:  #e5a800;
+    --white:   #ffffff;
+    --cream:   #fdf7f4;
+    --hot:     #db2777;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Header ── */
+  .header {
+    width: 100%;
+    background: var(--pink);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--slate) 40%, var(--gold) 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 20px; height: 20px; }
+  .logo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--slate-d);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Main container ── */
+  .container {
+    width: 100%;
+    max-width: 640px;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Intro ── */
+  .intro {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    display: inline-block;
+    background: var(--slate);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  .intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--slate-d);
+    margin-bottom: 16px;
+  }
+  .intro h1 em {
+    font-style: normal;
+    color: var(--hot);
+  }
+  .intro p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--slate);
+    max-width: 480px;
+    margin: 0 auto;
+    opacity: 0.85;
+  }
+  .divider {
+    width: 60px; height: 4px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin: 20px auto 0;
+  }
+
+  /* ── Audit card ── */
+  .audit { display: flex; flex-direction: column; gap: 32px; }
+
+  .question-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 24px rgba(73,80,87,0.07);
+    border-left: 5px solid var(--pink-d);
+    transition: border-color 0.3s;
+  }
+  .question-card.answered { border-left-color: var(--gold); }
+
+  .q-number {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hot);
+    margin-bottom: 10px;
+  }
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--slate-d);
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #ede9e6;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+  }
+  .option:hover { border-color: var(--pink-d); background: #fff5fb; }
+  .option.selected {
+    border-color: var(--gold);
+    background: #fffbea;
+  }
+  .option-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .option.selected .option-dot {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .option.selected .option-dot::after {
+    content: '';
+    width: 8px; height: 8px;
+    background: white;
+    border-radius: 50%;
+  }
+  .option-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--slate);
+  }
+
+  /* ── CTA Button ── */
+  .cta-wrap { text-align: center; margin-top: 8px; }
+  .cta-btn {
+    display: inline-block;
+    background: var(--slate-d);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 16px 40px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-btn:hover { background: var(--hot); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(219,39,119,0.25); }
+  .cta-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; background: var(--slate-d); }
+  .cta-note { font-size: 0.8rem; color: var(--slate); opacity: 0.6; margin-top: 10px; }
+
+  /* ── Progress ── */
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--pink);
+    border-radius: 2px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--hot), var(--gold));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Result ── */
+  .result { display: none; text-align: center; animation: fadeUp 0.5s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .result-badge {
+    display: inline-block;
+    background: var(--pink);
+    color: var(--slate-d);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    color: var(--slate-d);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .result-subtitle {
+    font-size: 1rem;
+    color: var(--hot);
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .result-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 24px rgba(73,80,87,0.08);
+    margin-bottom: 32px;
+    text-align: left;
+  }
+  .result-card p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--slate);
+    margin-bottom: 16px;
+  }
+  .result-card p:last-child { margin-bottom: 0; }
+  .result-card strong { color: var(--slate-d); }
+
+  .signal-list {
+    list-style: none;
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .signal-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .signal-list li::before {
+    content: '→';
+    color: var(--hot);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .result-cta {
+    background: linear-gradient(135deg, var(--pink) 0%, #fce7f3 100%);
+    border-radius: 20px;
+    padding: 32px 28px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .result-cta h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--slate-d);
+    margin-bottom: 10px;
+  }
+  .result-cta p {
+    font-size: 0.95rem;
+    color: var(--slate);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+  .result-cta-btn {
+    display: inline-block;
+    background: var(--slate-d);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  .result-cta-btn:hover { background: var(--hot); transform: translateY(-2px); }
+
+  .retake {
+    font-size: 0.85rem;
+    color: var(--slate);
+    opacity: 0.5;
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    margin-top: 8px;
+  }
+  .retake:hover { opacity: 0.8; }
+
+  /* ── Footer ── */
+  .footer {
+    width: 100%;
+    text-align: center;
+    padding: 24px;
+    font-size: 0.78rem;
+    color: var(--slate);
+    opacity: 0.45;
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 32px 16px 60px; }
+    .question-card { padding: 24px 18px; }
+    .result-card, .result-cta { padding: 24px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo-wrap">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 3C12 3 7 8 7 13a5 5 0 0010 0c0-5-5-10-5-10z" fill="#FFC107"/>
+        <path d="M12 3C12 3 9 7 9 11a3 3 0 006 0c0-4-3-8-3-8z" fill="white" opacity="0.3"/>
+      </svg>
+    </div>
+    <span class="logo-name">Corevity</span>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="container">
+
+  <!-- Intro -->
+  <div class="intro" id="intro">
+    <span class="eyebrow">Free 2-Minute Assessment</span>
+    <h1>Where is <em>reaction mode</em> running your business?</h1>
+    <p>Answer 3 honest questions. Get a personalized result that shows you exactly where you're stuck — and what to do about it.</p>
+    <div class="divider"></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+
+  <!-- Audit Questions -->
+  <div class="audit" id="auditSection">
+
+    <!-- Q1 -->
+    <div class="question-card" id="card-1">
+      <div class="q-number">Question 1 of 3</div>
+      <div class="q-text">When you sit down to work, what happens most often?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(1, 'firefighter', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">I get pulled into someone else's urgent request before I even start my own work.</div>
+        </div>
+        <div class="option" onclick="selectOption(1, 'planner', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">I spend the first hour reviewing my plan, adjusting it, or researching before actually starting.</div>
+        </div>
+        <div class="option" onclick="selectOption(1, 'believer', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">I stay busy all day but by evening I'm not sure what I actually moved forward.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card" id="card-2">
+      <div class="q-number">Question 2 of 3</div>
+      <div class="q-text">What does the end of your workday usually feel like?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(2, 'firefighter', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">Drained. I handled a lot — but most of it wasn't mine to handle.</div>
+        </div>
+        <div class="option" onclick="selectOption(2, 'planner', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">Frustrated. I know what I want to build but I never feel ready enough to start.</div>
+        </div>
+        <div class="option" onclick="selectOption(2, 'believer', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">Tired but uncertain. I was busy, but I can't point to real progress.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-card" id="card-3">
+      <div class="q-number">Question 3 of 3</div>
+      <div class="q-text">What's the one thing that keeps derailing your bigger goals?</div>
+      <div class="options">
+        <div class="option" onclick="selectOption(3, 'firefighter', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">Other people's needs, requests, and emergencies always come first.</div>
+        </div>
+        <div class="option" onclick="selectOption(3, 'planner', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">I keep waiting until I have more clarity, more time, or more confidence.</div>
+        </div>
+        <div class="option" onclick="selectOption(3, 'believer', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">I keep saying yes to things that feel productive but don't actually grow my business.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <button class="cta-btn" id="revealBtn" onclick="showResult()" disabled>
+        Show My Result →
+      </button>
+      <div class="cta-note">Takes less than 2 minutes. No email required to see your result.</div>
+    </div>
+
+  </div>
+
+  <!-- Result Section -->
+  <div class="result" id="resultSection">
+
+    <div class="result-badge">Your Reaction Audit Result</div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-subtitle" id="resultSubtitle"></div>
+
+    <div class="result-card" id="resultBody"></div>
+
+    <div class="result-cta">
+      <h3>Ready to move out of reaction — for good?</h3>
+      <p>The <em>Out of Reaction, Into Creation</em> 14-day workbook gives you the exact system to reclaim your focus, your decisions, and your business — one intentional day at a time.</p>
+      <a href="https://corevity.win" class="result-cta-btn">Get the Workbook →</a>
+    </div>
+
+    <button class="retake" onclick="retake()">Retake the audit</button>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  © 2026 Corevity · EternaEssence LLC · <a href="https://corevity.win" style="color:inherit;">corevity.win</a>
+</footer>
+
+<script>
+  const answers = { 1: null, 2: null, 3: null };
+
+  const results = {
+    firefighter: {
+      title: "The Fire Fighter",
+      subtitle: "You're managing everyone else's emergencies — and calling it work.",
+      body: `
+        <p>You're not struggling with ambition or ideas. You're struggling with <strong>boundaries that haven't been built yet</strong>. Every day starts with good intentions and ends with you having spent most of your energy on other people's priorities.</p>
+        <p>The signals are unmistakable:</p>
+        <ul class="signal-list">
+          <li>Your day gets hijacked before it starts</li>
+          <li>You feel responsible for things that aren't yours to carry</li>
+          <li>Your real work — the work that would actually grow your business — keeps getting pushed to tomorrow</li>
+        </ul>
+        <p>Here's what's true: <strong>you cannot build a business from someone else's urgency.</strong> The shift from fire fighter to founder starts with one decision — to protect your time before you give it away.</p>
+        <p>That's exactly what the <em>Out of Reaction, Into Creation</em> workbook is built to help you do.</p>
+      `
+    },
+    planner: {
+      title: "The Planner Who Never Launches",
+      subtitle: "Preparation has become your most sophisticated form of procrastination.",
+      body: `
+        <p>You're not lazy. You're not lacking ideas. You're <strong>living in the planning phase indefinitely</strong> — and it feels like work, which makes it the hardest pattern to break.</p>
+        <p>The signals are real:</p>
+        <ul class="signal-list">
+          <li>You research before you act — every single time</li>
+          <li>You revise the plan instead of executing it</li>
+          <li>Readiness feels like a destination you haven't reached yet</li>
+        </ul>
+        <p>Here's what no one tells you: <strong>clarity doesn't come before action. It comes from it.</strong> The version of you who launches is not more prepared — she's just more committed to finding out.</p>
+        <p>The <em>Out of Reaction, Into Creation</em> workbook breaks the preparation loop and gives you a 14-day system to move from planning into building.</p>
+      `
+    },
+    believer: {
+      title: "The Busy Believer",
+      subtitle: "You've convinced yourself that busy means building. It doesn't.",
+      body: `
+        <p>You work hard. No one questions that. But <strong>hard work without direction is just exhaustion with better branding.</strong> You're filling your days with activity that feels productive — and ending them wondering why nothing has shifted.</p>
+        <p>The signals show up like this:</p>
+        <ul class="signal-list">
+          <li>You're always doing something, but rarely moving your main goal forward</li>
+          <li>Your to-do list grows faster than your results</li>
+          <li>You feel guilty resting because you haven't done "enough" — but enough never comes</li>
+        </ul>
+        <p>The truth is: <strong>what your business needs isn't more of you — it needs the most focused version of you.</strong> Fewer things. Deeper commitment. Clearer intention.</p>
+        <p>The <em>Out of Reaction, Into Creation</em> workbook helps you cut through the noise and build with intention — one decision at a time.</p>
+      `
+    }
+  };
+
+  function selectOption(qNum, type, el) {
+    // Clear previous selection for this question
+    const card = document.getElementById(`card-${qNum}`);
+    card.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    card.classList.add('answered');
+    answers[qNum] = type;
+    updateProgress();
+    checkReady();
+  }
+
+  function updateProgress() {
+    const answered = Object.values(answers).filter(Boolean).length;
+    document.getElementById('progressFill').style.width = `${(answered / 3) * 100}%`;
+  }
+
+  function checkReady() {
+    const allAnswered = Object.values(answers).every(Boolean);
+    document.getElementById('revealBtn').disabled = !allAnswered;
+  }
+
+  function showResult() {
+    // Tally votes
+    const counts = { firefighter: 0, planner: 0, believer: 0 };
+    Object.values(answers).forEach(a => { if (a) counts[a]++; });
+    const winner = Object.entries(counts).sort((a,b) => b[1]-a[1])[0][0];
+    const r = results[winner];
+
+    document.getElementById('resultTitle').textContent = r.title;
+    document.getElementById('resultSubtitle').textContent = r.subtitle;
+    document.getElementById('resultBody').innerHTML = r.body;
+
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('auditSection').style.display = 'none';
+    document.getElementById('intro').style.display = 'none';
+
+    const rs = document.getElementById('resultSection');
+    rs.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function retake() {
+    Object.keys(answers).forEach(k => answers[k] = null);
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll('.question-card').forEach(c => c.classList.remove('answered'));
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('revealBtn').disabled = true;
+    document.getElementById('resultSection').style.display = 'none';
+    document.getElementById('auditSection').style.display = 'flex';
+    document.getElementById('intro').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
