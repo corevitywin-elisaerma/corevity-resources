@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Boundary Builder | Corevity</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&family=Caveat:wght@600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink:    #fbcfe8;
+    --pink-d:  #f9a8d4;
+    --slate:   #495057;
+    --slate-d: #2d3035;
+    --gold:    #FFC107;
+    --hot:     #db2777;
+    --cream:   #fdf7f4;
+    --white:   #ffffff;
+    --paper:   #fffdf9;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    min-height: 100vh;
+  }
+
+  .header {
+    width: 100%;
+    background: var(--pink);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--slate) 40%, var(--gold) 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--slate-d);
+    letter-spacing: 0.04em;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 100px;
+  }
+
+  .intro { text-align: center; margin-bottom: 44px; }
+  .eyebrow {
+    display: inline-block;
+    background: var(--slate);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  .intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 2.7rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--slate-d);
+    margin-bottom: 16px;
+  }
+  .intro h1 em { font-style: normal; color: var(--hot); }
+  .intro p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--slate);
+    max-width: 480px;
+    margin: 0 auto;
+    opacity: 0.85;
+  }
+  .divider { width: 60px; height: 4px; background: var(--gold); border-radius: 2px; margin: 20px auto 0; }
+
+  /* Builder form */
+  .builder-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: 0 4px 24px rgba(73,80,87,0.08);
+    margin-bottom: 32px;
+  }
+
+  .field-group { margin-bottom: 28px; }
+  .field-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--slate-d);
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 520px) { .option-grid { grid-template-columns: 1fr; } }
+
+  .option-btn {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #ede9e6;
+    background: var(--cream);
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--slate);
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .option-btn:hover { border-color: var(--pink-d); }
+  .option-btn.selected {
+    border-color: var(--gold);
+    background: #fffbea;
+    font-weight: 600;
+  }
+
+  .text-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #ede9e6;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    resize: vertical;
+    min-height: 90px;
+  }
+  .text-input:focus { outline: none; border-color: var(--pink-d); background: var(--white); }
+
+  .tone-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tone-btn {
+    padding: 10px 18px;
+    border-radius: 100px;
+    border: 2px solid #ede9e6;
+    background: var(--cream);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--slate);
+    transition: all 0.2s;
+  }
+  .tone-btn.selected { border-color: var(--gold); background: #fffbea; font-weight: 600; }
+
+  .cta-wrap { text-align: center; }
+  .cta-btn {
+    background: var(--slate-d);
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 16px 40px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .cta-btn:hover { background: var(--hot); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(219,39,119,0.25); }
+  .cta-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Result: the script "paper" */
+  .result { display: none; animation: fadeUp 0.5s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+
+  .result-badge {
+    display: block;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--hot);
+    margin-bottom: 20px;
+  }
+
+  .script-paper {
+    background: var(--paper);
+    border-radius: 4px;
+    padding: 44px 40px;
+    box-shadow: 0 8px 32px rgba(73,80,87,0.12);
+    position: relative;
+    margin-bottom: 28px;
+    border-top: 4px solid var(--gold);
+  }
+  .script-paper::before {
+    content: '';
+    position: absolute;
+    top: 20px; left: 40px; right: 40px;
+    border-top: 1px dashed #e5ddd3;
+  }
+  .script-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--hot);
+    margin-bottom: 20px;
+    display: block;
+  }
+  .script-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--slate-d);
+    white-space: pre-wrap;
+  }
+
+  .script-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .action-btn {
+    padding: 12px 24px;
+    border-radius: 100px;
+    border: 2px solid #ede9e6;
+    background: var(--white);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--slate);
+    transition: all 0.2s;
+  }
+  .action-btn:hover { border-color: var(--gold); background: #fffbea; }
+  .action-btn.copied { border-color: #10b981; background: #f0fdf4; color: #059669; }
+
+  .retry-link {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--slate);
+    opacity: 0.5;
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    margin: 0 auto;
+  }
+  .retry-link:hover { opacity: 0.8; }
+
+  .footer {
+    width: 100%;
+    text-align: center;
+    padding: 24px;
+    font-size: 0.78rem;
+    color: var(--slate);
+    opacity: 0.45;
+  }
+
+  @media (max-width: 480px) {
+    .builder-card { padding: 24px 20px; }
+    .script-paper { padding: 28px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-wrap">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+        <path d="M12 3C12 3 7 8 7 13a5 5 0 0010 0c0-5-5-10-5-10z" fill="#FFC107"/>
+        <path d="M12 3C12 3 9 7 9 11a3 3 0 006 0c0-4-3-8-3-8z" fill="white" opacity="0.3"/>
+      </svg>
+    </div>
+    <span class="logo-name">Corevity</span>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="intro" id="intro">
+    <span class="eyebrow">Free Tool · Boundary Builder</span>
+    <h1>Say no — without the <em>guilt spiral.</em></h1>
+    <p>Tell us what's draining you. Get a personalized script you can send today, word for word.</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="builder-card" id="builderCard">
+
+    <div class="field-group">
+      <label class="field-label">Who is this boundary for?</label>
+      <div class="option-grid" id="whoOptions">
+        <button class="option-btn" data-val="a client or customer">A client or customer</button>
+        <button class="option-btn" data-val="a family member">A family member</button>
+        <button class="option-btn" data-val="a friend">A friend</button>
+        <button class="option-btn" data-val="a coworker or team member">A coworker or team member</button>
+        <button class="option-btn" data-val="myself (a self-imposed obligation)">Myself (a self-imposed rule)</button>
+        <button class="option-btn" data-val="someone in my community or network">Someone in my community</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">What's the specific thing draining you?</label>
+      <textarea class="text-input" id="situationInput" placeholder="e.g. 'They keep asking for free advice outside our sessions' or 'I keep saying yes to calls that eat my mornings'"></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Pick your tone</label>
+      <div class="tone-grid" id="toneOptions">
+        <button class="tone-btn" data-val="warm">Warm & Kind</button>
+        <button class="tone-btn" data-val="direct">Direct & Clear</button>
+        <button class="tone-btn" data-val="firm">Firm & Final</button>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <button class="cta-btn" id="generateBtn" disabled>Build My Script →</button>
+    </div>
+
+  </div>
+
+  <div class="result" id="resultSection">
+    <span class="result-badge">Your Personalized Boundary Script</span>
+
+    <div class="script-paper">
+      <span class="script-label">Ready to send, word for word:</span>
+      <div class="script-text" id="scriptOutput"></div>
+    </div>
+
+    <div class="script-actions">
+      <button class="action-btn" id="copyBtn" onclick="copyScript()">📋 Copy Script</button>
+    </div>
+
+    <button class="retry-link" onclick="retry()">Build another script</button>
+  </div>
+
+</main>
+
+<footer class="footer">
+  © 2026 Corevity · EternaEssence LLC · corevity.win
+</footer>
+
+<script>
+  let selectedWho = null;
+  let selectedTone = null;
+
+  document.querySelectorAll('#whoOptions .option-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#whoOptions .option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedWho = btn.dataset.val;
+      checkReady();
+    });
+  });
+
+  document.querySelectorAll('#toneOptions .tone-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#toneOptions .tone-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedTone = btn.dataset.val;
+      checkReady();
+    });
+  });
+
+  const situationInput = document.getElementById('situationInput');
+  situationInput.addEventListener('input', checkReady);
+
+  function checkReady() {
+    const ready = selectedWho && selectedTone && situationInput.value.trim().length > 5;
+    document.getElementById('generateBtn').disabled = !ready;
+  }
+
+  const openers = {
+    warm: [
+      "I've been thinking about this, and I want to be honest with you because our relationship matters to me.",
+      "I really value you, which is exactly why I want to be upfront about something."
+    ],
+    direct: [
+      "I want to be clear about something so there's no confusion going forward.",
+      "I need to say something directly, because it matters to both of us that I'm honest."
+    ],
+    firm: [
+      "I've made a decision about this, and I want to communicate it clearly.",
+      "I need to set something straight, and I won't be revisiting it."
+    ]
+  };
+
+  const bridges = {
+    warm: "Here's what's true for me:",
+    direct: "Here's where I stand:",
+    firm: "Here's how it's going to be:"
+  };
+
+  const closers = {
+    warm: [
+      "I hope you can understand, and I'm still glad to support you in ways that work for both of us.",
+      "This isn't about you — it's about me protecting what I need to keep showing up well."
+    ],
+    direct: [
+      "I trust you'll respect this, and I'm happy to talk through it if you have questions.",
+      "This is what works for me moving forward, and I appreciate you hearing it."
+    ],
+    firm: [
+      "This isn't up for negotiation, and I appreciate you respecting it.",
+      "I won't be changing my mind on this, and I need it to be respected going forward."
+    ]
+  };
+
+  function buildScript() {
+    const who = selectedWho;
+    const situation = situationInput.value.trim();
+    const tone = selectedTone;
+
+    const opener = openers[tone][Math.floor(Math.random() * openers[tone].length)];
+    const bridge = bridges[tone];
+    const closer = closers[tone][Math.floor(Math.random() * closers[tone].length)];
+
+    const middle = `Regarding ${situation.charAt(0).toLowerCase() + situation.slice(1).replace(/\.$/, '')} — I've realized this isn't sustainable for me anymore.`;
+
+    return `${opener}\n\n${middle}\n\n${bridge} going forward, I need to change how I handle this. ${closer}`;
+  }
+
+  document.getElementById('generateBtn').addEventListener('click', () => {
+    const script = buildScript();
+    document.getElementById('scriptOutput').textContent = script;
+
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('builderCard').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  function copyScript() {
+    const text = document.getElementById('scriptOutput').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Copy Script';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function retry() {
+    selectedWho = null;
+    selectedTone = null;
+    situationInput.value = '';
+    document.querySelectorAll('.option-btn, .tone-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('generateBtn').disabled = true;
+
+    document.getElementById('resultSection').style.display = 'none';
+    document.getElementById('intro').style.display = 'block';
+    document.getElementById('builderCard').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
